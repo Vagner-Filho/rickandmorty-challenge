@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100 text-start">
+  <div class="position-absolute to-home">
     <router-link to="/">
       <img src="/arrow_back.svg" alt="Go to home">
     </router-link>
@@ -20,5 +20,7 @@ import SpecieContainer from '../components/SpecieContainer.vue';
 </script>
 
 <style scoped>
-
+  .to-home {
+    top: 10px;
+  }
 </style>
