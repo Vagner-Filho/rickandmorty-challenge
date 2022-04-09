@@ -1,6 +1,8 @@
 # rickandmorty-challenge
 Front-end Challenge to build a characters display from the tv series
 
+## Figma prototype: https://www.figma.com/file/pBq4LkQXbSxKlk1KPNppgR/segdev?node-id=0%3A1
+
 # Vue 3 + Typescript + Vite
 
 This template should help get you started developing with Vue 3 and Typescript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
