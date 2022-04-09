@@ -1,12 +1,15 @@
 <template>
-  <div class="w-100 text-end mt-3 mb-3">
-    <SearchBtn />
+  <div class="w-100 mt-3 mb-3 d-flex justify-content-between">
+    <router-link to="/">
+      <img src="/arrow_back.svg" alt="Go to home">
+    </router-link>
+    <FilterBtn />
   </div>
   <section id="character-detail">
     <header></header>
     <main class="white-font">
       <h1>Character name</h1>
-      <p>Status: Alive</p>
+      <p>Status: Alive <div class="alive" /></p>
       <p>Species</p>
       <p>Origin</p>
     </main>
@@ -14,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import SearchBtn from '../components/SearchBtn.vue';
+import FilterBtn from '../components/FilterBtn.vue';
 
 </script>
 
@@ -47,5 +50,16 @@ import SearchBtn from '../components/SearchBtn.vue';
   }
   section#character-detail > main > h1 {
     font-size: 1.2rem;
+  }
+  .alive {
+    width: 15px;
+    height: 15px;
+    border-radius: 17px;
+    background-color: #1CFF4E;
+    margin-left: 10px;
+  }
+  section#character-detail > main > p:nth-child(2) {
+    display: inline-flex;
+    align-items: center;
   }
 </style>
