@@ -1,5 +1,6 @@
 <template>
   <Nav/>
+  <router-view />
 </template>
 
 <script setup lang="ts">
@@ -17,7 +18,7 @@ import Nav from './components/Nav.vue'
 }
 @font-face {
   font-family: 'Sanchez';
-  src: url('@/assets/fonts/Sanchez-Regular.ttf');
+  src: url('/fonts/Sanchez-Regular.ttf');
 }
 html {
   height: 100vh;
@@ -25,11 +26,14 @@ html {
 body {
   background-repeat: no-repeat;
   background-size: cover;
+  padding: 0 15px;
+  max-width: 1440px;
 }
 .white-font {
   font-family: 'Sanchez';
   color: #fff;
 }
+
 @media (max-width: 1080px) {
   body {
     background-image: url('/mobilebg.png');
