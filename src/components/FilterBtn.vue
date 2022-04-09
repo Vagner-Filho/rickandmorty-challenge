@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="search-btn white-font">Search</button>
+  <button type="button" class="search-btn white-font" @click="$router.push({ name: 'FilterPage'})">Filter</button>
 </template>
 
 <script setup lang="ts">
@@ -13,7 +13,7 @@
     border-radius: 25px;
     text-align: start;
     padding: 0 10px;
-    background-image: url('/search.svg');
+    background-image: url('/filter_icon.svg');
     font-size: 0.8rem;
     height: 25px;
     width: 100px;
