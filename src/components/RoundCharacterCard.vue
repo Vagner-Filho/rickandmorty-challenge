@@ -1,6 +1,6 @@
 <template>
   <nav id="round-character-card">
-    <figure>
+    <figure @click="$router.push({ name: 'CharacterDetail', params: { id: 1 }})">
       <!-- <img src="" alt=""> -->
     </figure>
     <figcaption class="white-font">Human Human</figcaption>

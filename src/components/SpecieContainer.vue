@@ -7,7 +7,7 @@
     <main class="container-fluid">
       <div class="row">
         <div class="col-6 col-sm-4 col-md-3" v-for="item in 4"> 
-          <RoundCharcaterCard />
+          <RoundCharacterCard />
         </div>
       </div>
     </main>
@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import RoundCharcaterCard from './RoundCharcaterCard.vue';
+import RoundCharacterCard from './RoundCharacterCard.vue';
 
   const props = defineProps<{
     specie: string
