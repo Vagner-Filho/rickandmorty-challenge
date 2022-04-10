@@ -28,6 +28,7 @@ body {
   background-size: cover;
   padding: 0 15px;
   max-width: 1440px;
+  margin: 0 auto !important;
 }
 .white-font {
   font-family: 'Sanchez';

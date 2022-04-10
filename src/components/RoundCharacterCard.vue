@@ -38,5 +38,13 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-  } 
+  }
+  @media (min-width: 768px) {
+    #round-character-card > figcaption {
+      font-size: 1.2rem;
+    }
+    #round-character-card div.white-font {
+      font-size: 1rem;
+    }
+  }
 </style>
