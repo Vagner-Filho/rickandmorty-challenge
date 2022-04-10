@@ -12,6 +12,7 @@
       </div>
     </main>
     <footer class="mt-3">
+      <!-- TODO: scroll container to indicate that new data is available -->
       <button type="button" class="btn btn-primary" @click="dummyCardCounter += 4">More</button>
     </footer>
   </section>
@@ -53,9 +54,17 @@ import RoundCharacterCard from './RoundCharacterCard.vue';
     overflow-y: auto;
   }
   section.specie-container > footer > button {
-    width: 100px;
+    width: 120px;
     border-radius: 20px;
-    height: 30px;
-    line-height: 15px;
+    height: 40px;
+    line-height: 20px;
+    font-size: 1.2rem;
+    font-family: 'Sanchez';
+  }
+
+  @media (min-width: 768px) {
+    section.specie-container > header > h1 {
+      font-size: 2rem;
+    }
   }
 </style>
