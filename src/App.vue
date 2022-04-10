@@ -5,6 +5,22 @@
 
 <script setup lang="ts">
 import Nav from './components/Nav.vue'
+
+
+// routine to get all species
+// const arr: any[] = []
+
+// const getSpecie = async (url: RequestInfo) => {
+//   const res = await (await fetch(url)).json()
+//   res.results.forEach((r: any) => {
+//     if (!arr.includes(r.species)) arr.push(r.species)
+//   });
+//   if (res.info.next) getSpecie(res.info.next)
+// }
+
+// getSpecie('https://rickandmortyapi.com/api/character')
+
+// console.log(arr)
 </script>
 
 <style>
