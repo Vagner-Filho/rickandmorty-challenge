@@ -62,4 +62,12 @@ import FilterBtn from '../components/FilterBtn.vue';
     display: inline-flex;
     align-items: center;
   }
+  @media (min-width: 768px) {
+    section#character-detail > main > h1 {
+      font-size: 1.5rem;
+    }
+    section#character-detail > main > p {
+      font-size: 1.2rem;
+    }
+  }
 </style>
