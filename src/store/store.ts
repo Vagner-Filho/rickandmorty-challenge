@@ -25,15 +25,15 @@ export const useCharacterStore = defineStore('characterStore', {
     return {
       species: {
         humans: new Array(),
-        alien: [],
-        humanoid: [],
-        unknown: [],
-        poopybutthole: [],
-        mythologicalCreature: [],
-        animal: [],
-        robot: [],
-        cronenberg: [],
-        disease: []
+        alien: new Array(),
+        humanoid: new Array(),
+        unknown: new Array(),
+        poopybutthole: new Array(),
+        Mythological: new Array(),
+        animal: new Array(),
+        robot: new Array(),
+        cronenberg: new Array(),
+        disease: new Array()
       },
       detailedCharacter
     }

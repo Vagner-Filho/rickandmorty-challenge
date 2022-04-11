@@ -6,7 +6,7 @@
     </header>
     <main class="container-fluid">
       <div class="row">
-        <div class="col-6 col-sm-4 col-md-3" v-for="character in useStore.species.humans[0]">
+        <div class="col-6 col-sm-4 col-md-3" v-for="character in specieCluster">
           <RoundCharacterCard 
             :id="character.id"
             :avatarPath="character.image"
@@ -31,20 +31,69 @@ import { onMounted } from 'vue';
 
 const props = defineProps<{
   specie: string
+  isInFilter: boolean
 }>()
 const specieName = computed(() => {
   const firstLetterUpperCase = props.specie.slice(0, 1)
 
   return `${firstLetterUpperCase.toUpperCase()}${props.specie.slice(1)}`
 })
+const specieCluster = computed(() => {
+  if (props.specie === 'human') return useStore.species.humans[0]
+  if (props.specie === 'alien') return useStore.species.alien[0]
+  if (props.specie === 'humanoid') return useStore.species.humanoid[0]
+  if (props.specie === 'unknown') return useStore.species.unknown[0]
+  if (props.specie === 'poopybutthole') return useStore.species.poopybutthole[0]
+  if (props.specie === 'Mythological') return useStore.species.Mythological[0]
+  if (props.specie === 'animal') return useStore.species.animal[0]
+  if (props.specie === 'robot') return useStore.species.robot[0]
+  if (props.specie === 'cronenberg') return useStore.species.cronenberg[0]
+  if (props.specie === 'disease') return useStore.species.disease[0]
+})
 const dummyCardCounter = ref(4)
 
 const useStore = useCharacterStore()
 
 onMounted(async () => {
-  const humans = await useStore.getSpecie(specieName.value)
-  if (humans) {
-    useStore.$patch((state) => state.species.humans.push(humans))
+  if (!props.isInFilter) {
+    // TODO: continuar adicionando no array existente no store ao inves de criar novos
+    const specie = await useStore.getSpecie(specieName.value)
+    if (specie) {
+      switch (specieName.value.toLowerCase()) {
+        case 'human':
+          useStore.$patch((state) => state.species.humans.push(specie))
+          break;
+        case 'alien':
+          useStore.$patch((state) => state.species.alien.push(specie))
+          break;
+        case 'humanoid':
+          useStore.$patch((state) => state.species.humanoid.push(specie))
+          break;
+        case 'unknown':
+          useStore.$patch((state) => state.species.unknown.push(specie))
+          break;
+        case 'poopybutthole':
+          useStore.$patch((state) => state.species.poopybutthole.push(specie))
+          break;
+        case 'Mythological':
+          useStore.$patch((state) => state.species.Mythological.push(specie))
+          break;
+        case 'animal':
+          useStore.$patch((state) => state.species.animal.push(specie))
+          break;
+        case 'robot':
+          useStore.$patch((state) => state.species.robot.push(specie))
+          break;
+        case 'cronenberg':
+          useStore.$patch((state) => state.species.cronenberg.push(specie))
+          break;
+        case 'disease':
+          useStore.$patch((state) => state.species.disease.push(specie))
+          break;
+        default:
+          break;
+      }
+    } 
   }
 })
 </script>

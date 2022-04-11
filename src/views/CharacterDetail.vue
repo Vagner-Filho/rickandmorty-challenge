@@ -37,7 +37,6 @@ const selectStatus = computed(() => {
 onMounted( async () => {
   waitingResponse.value = true
   const character = await store.getCharacter(parseInt(route.params.id.toString()))
-  console.log(character)
   if (character instanceof Object) {
     store.$patch((state) => state.detailedCharacter = {...character})
   }

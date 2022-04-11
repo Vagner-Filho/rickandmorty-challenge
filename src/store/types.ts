@@ -22,7 +22,7 @@ export interface ISpecies {
   humanoid: ICharacter[]
   unknown: ICharacter[]
   poopybutthole: ICharacter[]
-  mythologicalCreature: ICharacter[]
+  Mythological: ICharacter[]
   animal: ICharacter[]
   robot: ICharacter[]
   cronenberg: ICharacter[]

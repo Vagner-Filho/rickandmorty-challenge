@@ -31,8 +31,8 @@ const props = defineProps<{
     cursor: pointer;
   }
   #round-character-card > figure {
-    width: 100px;
-    height: 100px;
+    width: 90px;
+    height: 90px;
     margin: 0;
   }
   #round-character-card > figure > img {
