@@ -1,6 +1,6 @@
 <template>
   <header class="container-fluid mb-3 mt-3">
-    <div class="row white-font">
+    <div class="row white-font" v-if="!loadingFilters">
       <div v-for="(filter, index) in filtersConfig" :key="index" :class="`${filter.filterClass} mt-2`">
         <select v-if="filter.name !== 'name-filter'" :name="`${filter.name}`" :id="`${filter.id}`" class="character-filter">
           <option value="" disabled selected>{{ filter.optionPlaceholder }}</option>
@@ -11,11 +11,14 @@
         <input v-else type="text" :name="`${filter.name}`" :id="`${filter.id}`" :placeholder="filter.optionPlaceholder" class="character-filter">
       </div>
     </div>
+    <div v-else class="spinner-border text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, reactive } from 'vue';
+import { onBeforeMount, reactive, ref } from 'vue';
 import { useCharacterStore } from '../store/store';
 import { getFiltersOptions } from '../../utils/functions';
 
@@ -59,12 +62,17 @@ const filtersConfig = reactive([
   }
 ])
 
+const loadingFilters = ref(true)
+
 onBeforeMount( async () => {
-  useStore.$reset()
-  const filters = await getFiltersOptions()
-  for (const filter of filters) {
-    useStore.$patch((state) => state.filtersOptions.push(filter))
+  loadingFilters.value = true
+  if (useStore.filtersOptions.length < 1) {
+    const filters = await getFiltersOptions()
+    for (const filter of filters) {
+      useStore.$patch((state) => state.filtersOptions.push(filter))
+    } 
   }
+  loadingFilters.value = false
 })
 </script>
 
