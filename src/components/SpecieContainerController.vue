@@ -30,7 +30,7 @@ const species = reactive([
   "humanoid",
   "unknown",
   "poopybutthole",
-  "Mythological",
+  "mythological",
   "animal",
   "robot",
   "cronenberg",

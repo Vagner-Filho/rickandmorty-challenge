@@ -30,7 +30,7 @@ export const useCharacterStore = defineStore('characterStore', {
         humanoid: new Array(),
         unknown: new Array(),
         poopybutthole: new Array(),
-        Mythological: new Array(),
+        mythological: new Array(),
         animal: new Array(),
         robot: new Array(),
         cronenberg: new Array(),
@@ -39,7 +39,7 @@ export const useCharacterStore = defineStore('characterStore', {
       detailedCharacter,
       filteredCharacters,
       filtersOptions: new Array(),
-      message: ''
+      message: '',
     }
   },
   persist: true,
@@ -65,7 +65,7 @@ export const useCharacterStore = defineStore('characterStore', {
           for (const rawCharacter of data.results) {
             arr.push(extractCharacter(rawCharacter))
           }
-          return arr
+          return { speciesArray: arr, next: data.info.next }
         } else {
           const err: string = "Espécie não encontrada"
           return err
