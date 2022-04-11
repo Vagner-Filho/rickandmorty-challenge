@@ -1,15 +1,6 @@
 /// <reference types="Cypress" />
 
-interface ICharacter {
-  id: number
-  name: string
-  status: string
-  species: string
-  type: string,
-  gender: string
-  origin: string
-  location: string
-}
+import { ICharacter } from '../../../src/store/types'
 
 const mockCharacter: ICharacter = {
   id: 0,
@@ -19,7 +10,8 @@ const mockCharacter: ICharacter = {
   type: '',
   gender: 'Male',
   origin: 'Campo Grande - MS',
-  location: 'Campo Grande - MS'
+  location: 'Campo Grande - MS',
+  image: ''
 }
 
 const mockedDB = 'http://localhost:5000/character'

@@ -5,20 +5,44 @@
     </router-link>
     <FilterBtn />
   </div>
-  <section id="character-detail">
-    <header></header>
+  <section v-if="!waitingResponse" id="character-detail">
+    <header>
+      <img :src="store.detailedCharacter.image" alt="" class="w-100">
+    </header>
     <main class="white-font">
-      <h1>Character name</h1>
-      <p>Status: Alive <div class="alive" /></p>
-      <p>Species</p>
-      <p>Origin</p>
+      <h1>{{ store.detailedCharacter.name }}</h1>
+      <p>Status: {{ store.detailedCharacter.status }} <div :class="selectStatus" /></p>
+      <p>Species: {{ store.detailedCharacter.species }}</p>
+      <p>Origin: {{ store.detailedCharacter.origin.name }}</p>
     </main>
   </section>
+  <div v-else class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
 </template>
 
 <script setup lang="ts">
 import FilterBtn from '../components/FilterBtn.vue';
+import { useRoute } from 'vue-router';
+import { useCharacterStore } from '../store/store';
+import { computed, onMounted, ref } from 'vue';
 
+const route = useRoute()
+const store = useCharacterStore()
+const waitingResponse = ref(false)
+const selectStatus = computed(() => {
+  return store.detailedCharacter.status === 'Alive' ? 'alive' : 'dead'
+})
+
+onMounted( async () => {
+  waitingResponse.value = true
+  const character = await store.getCharacter(parseInt(route.params.id.toString()))
+  console.log(character)
+  if (character instanceof Object) {
+    store.$patch((state) => state.detailedCharacter = {...character})
+  }
+  waitingResponse.value = false
+})
 </script>
 
 <style scoped>
@@ -30,11 +54,11 @@ import FilterBtn from '../components/FilterBtn.vue';
     margin: auto;
   }
   section#character-detail > header {
-    height: 60%;
+    height: auto;
     background-color: #e6e6e6;
   }
   section#character-detail > main {
-    height: 40%;
+    height: auto;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -51,16 +75,25 @@ import FilterBtn from '../components/FilterBtn.vue';
   section#character-detail > main > h1 {
     font-size: 1.2rem;
   }
-  .alive {
+  .alive, .dead {
     width: 15px;
     height: 15px;
     border-radius: 17px;
-    background-color: #1CFF4E;
     margin-left: 10px;
+  }
+  .alive {
+    background-color: #1CFF4E;
+  }
+  .dead {
+    background-color: red;
   }
   section#character-detail > main > p:nth-child(2) {
     display: inline-flex;
     align-items: center;
+  }
+  .spinner-border {
+    width: 150px;
+    height: 150px;
   }
   @media (min-width: 768px) {
     section#character-detail > main > h1 {
