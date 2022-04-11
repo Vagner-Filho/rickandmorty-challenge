@@ -1,6 +1,6 @@
 <template>
   <section :id="`specie-container-${specie}`" class="specie-container">
-    <header class="d-flex">
+    <header v-if="!isInFilter"  class="d-flex">
       <h1 class="white-font">{{ specieName }}</h1>
       <hr>
     </header>
@@ -14,7 +14,7 @@
             :location="character.location.name"
           />
         </div>
-        <div v-else class="col-6 col-sm-4 col-md-3" v-for="character in specieCluster">
+        <div v-else-if="isInFilter && useStore.filteredCharacters.length > 0" class="col-6 col-sm-4 col-md-3" v-for="character in useStore.filteredCharacters">
           <RoundCharacterCard 
             :id="character.id"
             :avatarPath="character.image"
@@ -22,17 +22,20 @@
             :location="character.location.name"
           />
         </div>
+        <span v-else class="white-font">
+          {{ useStore.message }}
+        </span>
       </div>
     </main>
     <footer class="mt-3">
       <!-- TODO: scroll container to indicate that new data is available -->
-      <button type="button" class="btn btn-primary" @click="dummyCardCounter += 4">More</button>
+      <button type="button" class="btn btn-primary" @click="addCharacters(props.specie)">More</button>
     </footer>
     </section>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import RoundCharacterCard from './RoundCharacterCard.vue';
 import { useCharacterStore } from '../store/store';
 import { onMounted } from 'vue';
@@ -60,7 +63,9 @@ const specieCluster = computed(() => {
   if (props.specie === 'cronenberg') return useStore.species.cronenberg[0]
   if (props.specie === 'disease') return useStore.species.disease[0]
 })
-const dummyCardCounter = ref(4)
+
+const addCharacters = async (param: string) => {
+}
 
 const useStore = useCharacterStore()
 
@@ -68,7 +73,7 @@ onMounted(async () => {
   if (!props.isInFilter) {
     // TODO: continuar adicionando no array existente no store ao inves de criar novos
     const specie = await useStore.getSpecie(specieName.value)
-    if (specie) {
+    if (specie) { // refatorar para remover switch case
       switch (specieName.value.toLowerCase()) {
         case 'human':
           useStore.$patch((state) => state.species.humans.push(specie))

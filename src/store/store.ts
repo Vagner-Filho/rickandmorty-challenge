@@ -38,7 +38,8 @@ export const useCharacterStore = defineStore('characterStore', {
       },
       detailedCharacter,
       filteredCharacters,
-      filtersOptions: new Array()
+      filtersOptions: new Array(),
+      message: ''
     }
   },
   persist: true,
@@ -73,32 +74,21 @@ export const useCharacterStore = defineStore('characterStore', {
         console.error(error)
       }
     },
-    async filterCharacters(name?: string, status?: string, species?: string, type?: string, gender?: string) {
-      // TODO: implementar com arguments
-      const options = [name, status, species, type, gender] // Aparentemente, não tenho acesso a arguments em spec.ts
-      let params = '';
-
-      // condicionais abaixo concatenam a query de filtragem
-      if (options[0]) params += `name=${name}&`
-      if (options[1]) params += `status=${status}&`
-      if (options[2]) params += `species=${species}&`
-      if (options[3]) params += `type=${type}&`
-      if (options[4]) params += `gender=${gender}&`
-
+    async filterCharacters(filterQuery: string) {
       try {
-        const rawResponse = await fetch(`${BASE_URL}/?${params}`)
+        const rawResponse = await fetch(`${BASE_URL}/?${filterQuery}`)
         if (rawResponse.status === 200) {
           const data = await rawResponse.json()
-
+          console.log(data)
           // valida casos em que o retorno é 200, mas o dado vazio
-          if (data.length > 0) {
+          if (data.results.length > 0) {
             const extractCharacter = (data: any) => {
               const character: ICharacter = { ...data }
               return character
             }
             const arr: ICharacter[] = []
 
-            for (const character of data) {
+            for (const character of data.results) {
               arr.push(character)
             }
             return arr
