@@ -9,6 +9,7 @@
     <main>
       <SpecieContainer
         specie="human"
+        :is-in-filter="true"
       />
     </main>
   </section>

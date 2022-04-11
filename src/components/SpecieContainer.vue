@@ -6,7 +6,15 @@
     </header>
     <main class="container-fluid">
       <div class="row">
-        <div class="col-6 col-sm-4 col-md-3" v-for="character in specieCluster">
+        <div v-if="!isInFilter" class="col-6 col-sm-4 col-md-3" v-for="character in specieCluster">
+          <RoundCharacterCard 
+            :id="character.id"
+            :avatarPath="character.image"
+            :name="character.name"
+            :location="character.location.name"
+          />
+        </div>
+        <div v-else class="col-6 col-sm-4 col-md-3" v-for="character in specieCluster">
           <RoundCharacterCard 
             :id="character.id"
             :avatarPath="character.image"
@@ -38,6 +46,8 @@ const specieName = computed(() => {
 
   return `${firstLetterUpperCase.toUpperCase()}${props.specie.slice(1)}`
 })
+
+// TODO: Refactor switch case and ifs in mounted and specieCluster
 const specieCluster = computed(() => {
   if (props.specie === 'human') return useStore.species.humans[0]
   if (props.specie === 'alien') return useStore.species.alien[0]
@@ -75,7 +85,7 @@ onMounted(async () => {
         case 'poopybutthole':
           useStore.$patch((state) => state.species.poopybutthole.push(specie))
           break;
-        case 'Mythological':
+        case 'mythological':
           useStore.$patch((state) => state.species.Mythological.push(specie))
           break;
         case 'animal':

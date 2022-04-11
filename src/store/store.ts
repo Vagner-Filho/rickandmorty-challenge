@@ -19,6 +19,7 @@ const detailedCharacter: ICharacter = {
     url: ''
   }
 }
+const filteredCharacters: ICharacter[] = []
 
 export const useCharacterStore = defineStore('characterStore', {
   state: () => {
@@ -35,28 +36,30 @@ export const useCharacterStore = defineStore('characterStore', {
         cronenberg: new Array(),
         disease: new Array()
       },
-      detailedCharacter
+      detailedCharacter,
+      filteredCharacters,
+      filtersOptions: new Array()
     }
   },
   persist: true,
   actions: {
-    async getSpecie (specie: string) {
+    async getSpecie(specie: string) {
       try {
         const rawResponse = await fetch(`${BASE_URL}/?species=${specie}`)
-    
+
         if (rawResponse.status === 200) {
           const data = await rawResponse.json()
-    
+
           if (data.results.length === 0) {
             const err: string = "Espécie não encontrada"
             return err
           }
-    
+
           const extractCharacter = (data: any) => {
             const character: ICharacter = { ...data }
             return character
           }
-    
+
           const arr: ICharacter[] = []
           for (const rawCharacter of data.results) {
             arr.push(extractCharacter(rawCharacter))
@@ -116,7 +119,7 @@ export const useCharacterStore = defineStore('characterStore', {
         const res = await fetch(`${BASE_URL}/${id}`)
         if (res.status === 200) {
           const data = await res.json()
-      
+
           const extractCharacter = (data: any) => {
             const character: ICharacter = { ...data }
             return character
@@ -127,6 +130,31 @@ export const useCharacterStore = defineStore('characterStore', {
       } catch (error) {
         console.error(error)
       }
+    },
+    async getFiltersOptions() {
+      // refactor to push directly to state
+      const statusArr: any[] = []
+      const speciesArray: any[] = []
+      const typesArray: any[] = []
+      const genderArray: any[] = []
+
+      const getSpecie = async (url: RequestInfo) => {
+        const res = await (await fetch(url)).json()
+        res.results.forEach((r: any) => {
+          if (!statusArr.includes(r.status)) statusArr.push(r.status)
+          if (!speciesArray.includes(r.species)) speciesArray.push(r.species)
+          if (!typesArray.includes(r.type)) typesArray.push(r.type)
+          if (!genderArray.includes(r.gender)) genderArray.push(r.gender)
+        });
+        if (res.info.next) getSpecie(res.info.next)
+      }
+
+      getSpecie('https://rickandmortyapi.com/api/character')
+
+      this.filtersOptions.push(statusArr)
+      this.filtersOptions.push(speciesArray)
+      this.filtersOptions.push(typesArray)
+      this.filtersOptions.push(genderArray)
     }
   }
 })

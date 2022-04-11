@@ -1,22 +1,32 @@
 <template>
   <header class="container-fluid mb-3 mt-3">
-    <div class="row white-font">
-      <div v-for="(filter, index) in filters" :key="index" :class="`${filter.filterClass} mt-2`">
-        <select :name="`${filter.name}`" :id="`${filter.id}`" class="character-filter">
+    <div class="row white-font" v-if="useStore.filtersOptions.length > 0">
+      <div v-for="(filter, index) in filtersConfig" :key="index" :class="`${filter.filterClass} mt-2`">
+        <select v-if="filter.name !== 'name-filter'" :name="`${filter.name}`" :id="`${filter.id}`" class="character-filter">
           <option value="" disabled selected>{{ filter.optionPlaceholder }}</option>
+          <option v-for="(option, optionIndex) in useStore.filtersOptions[index - 1]" :value="option" >
+            {{ option }}
+          </option>
         </select>
+        <input v-else type="text" :name="`${filter.name}`" :id="`${filter.id}`" :placeholder="filter.optionPlaceholder" class="character-filter">
       </div>
-      <!-- <div class="col-4 offset-8 offset-sm-0 mt-2"> check line 62
-        <button type="button" class="confirm-filters">Confirm</button>
-      </div> -->
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
+import { useCharacterStore } from '../store/store';
 
-const filters = reactive([
+const useStore = useCharacterStore()
+useStore.$reset()
+const filtersData = reactive({
+  name: '',
+  status: '',
+  type: '',
+  gender: ''
+})
+const filtersConfig = reactive([
   {
     filterClass: 'col-8 col-sm-4 limit-size-300',
     name: 'name-filter',
@@ -49,6 +59,9 @@ const filters = reactive([
   }
 ])
 
+onMounted(() => {
+  if (useStore.$state.filtersOptions.length < 1) useStore.getFiltersOptions()
+})
 </script>
 
 <style scoped>
@@ -60,7 +73,11 @@ const filters = reactive([
   padding: 0 10px;
   width: 100%;
 }
-.confirm-filters { /* Decided to remove the button, so the requests are made when any selector changes */
+
+select.character-filter > option {
+  background-color: black;
+}
+.confirm-filtersConfig { /* Decided to remove the button, so the requests are made when any selector changes */
   background-color: #fff;
   font-family: 'Sanchez';
   color: #000;
