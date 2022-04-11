@@ -1,6 +1,6 @@
 <template>
   <header class="container-fluid mb-3 mt-3">
-    <div class="row white-font" v-if="useStore.filtersOptions.length > 0">
+    <div class="row white-font">
       <div v-for="(filter, index) in filtersConfig" :key="index" :class="`${filter.filterClass} mt-2`">
         <select v-if="filter.name !== 'name-filter'" :name="`${filter.name}`" :id="`${filter.id}`" class="character-filter">
           <option value="" disabled selected>{{ filter.optionPlaceholder }}</option>
@@ -15,11 +15,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue';
+import { onBeforeMount, reactive } from 'vue';
 import { useCharacterStore } from '../store/store';
+import { getFiltersOptions } from '../../utils/functions';
 
 const useStore = useCharacterStore()
-useStore.$reset()
 const filtersData = reactive({
   name: '',
   status: '',
@@ -59,8 +59,12 @@ const filtersConfig = reactive([
   }
 ])
 
-onMounted(() => {
-  if (useStore.$state.filtersOptions.length < 1) useStore.getFiltersOptions()
+onBeforeMount( async () => {
+  useStore.$reset()
+  const filters = await getFiltersOptions()
+  for (const filter of filters) {
+    useStore.$patch((state) => state.filtersOptions.push(filter))
+  }
 })
 </script>
 

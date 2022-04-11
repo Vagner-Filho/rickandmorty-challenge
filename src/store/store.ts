@@ -130,31 +130,6 @@ export const useCharacterStore = defineStore('characterStore', {
       } catch (error) {
         console.error(error)
       }
-    },
-    async getFiltersOptions() {
-      // refactor to push directly to state
-      const statusArr: any[] = []
-      const speciesArray: any[] = []
-      const typesArray: any[] = []
-      const genderArray: any[] = []
-
-      const getSpecie = async (url: RequestInfo) => {
-        const res = await (await fetch(url)).json()
-        res.results.forEach((r: any) => {
-          if (!statusArr.includes(r.status)) statusArr.push(r.status)
-          if (!speciesArray.includes(r.species)) speciesArray.push(r.species)
-          if (!typesArray.includes(r.type)) typesArray.push(r.type)
-          if (!genderArray.includes(r.gender)) genderArray.push(r.gender)
-        });
-        if (res.info.next) getSpecie(res.info.next)
-      }
-
-      getSpecie('https://rickandmortyapi.com/api/character')
-
-      this.filtersOptions.push(statusArr)
-      this.filtersOptions.push(speciesArray)
-      this.filtersOptions.push(typesArray)
-      this.filtersOptions.push(genderArray)
     }
   }
 })

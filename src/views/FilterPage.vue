@@ -5,7 +5,7 @@
     </router-link>
   </div>
   <section id="filter-page">
-    <Filters />
+    <Filters/>
     <main>
       <SpecieContainer
         specie="human"
