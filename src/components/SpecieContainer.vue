@@ -1,3 +1,5 @@
+<!-- Este componente foi generalizado apesar da confusãoo no template -->
+<!-- É utilizado tanto na páginação de espécies como na filtragem -->
 <template>
   <section :id="`specie-container-${specie}`" class="specie-container">
     <header v-if="!isInFilter" class="d-flex">
@@ -42,31 +44,33 @@ import { useCharacterStore } from '../store/store';
 import { ICharacter, ISpeciesCluster } from "../store/types";
 import { onMounted } from 'vue';
 
-const useStore = useCharacterStore()
+const useStore = useCharacterStore() // acesso ao store
 
 const props = defineProps<{
   specie: string
   isInFilter: boolean
 }>()
-const specieName = computed(() => {
+const specieName = computed(() => { // computed para deixar a primeira letra em upper case
   const firstLetterUpperCase = props.specie.slice(0, 1)
 
   return `${firstLetterUpperCase.toUpperCase()}${props.specie.slice(1)}`
 })
 
-// TODO: Refactor switch case and ifs in mounted and specieCluster
-const specieCluster = computed(() => {
+const specieCluster = computed(() => { // retorna o cluster de espécies adequado
   return useStore.species[props.specie as keyof ISpeciesCluster]
 })
 
-const nextPage = ref('')
+const nextPage = ref('') // utilizado para buscar mais dados do mesmo tipo
+// FIXME: existe um bug quando uma página é passada, ela perde o seu link nextPage.
+// Então é preciso atualizar a página para recuperar o link e carregar novos dados daquele tipo
 
-const addingCharacters = ref(false)
-const emit = defineEmits(['addingCharacters', 'charactersAdded'])
-const addCharacters = async (next: string) => {
+const addingCharacters = ref(false) // variável de controle
+const emit = defineEmits(['addingCharacters', 'charactersAdded']) // definição de emits
+
+const addCharacters = async (next: string) => { // busca personagens do mesmo tipo para aumentar a página
   addingCharacters.value = true
   emit('addingCharacters')
-  if (next) {
+  if (next) { // é aqui que o nextPage falha ao mudar de página
     const response = await fetch(next)
     if (response.status === 200) {
       const data = await response.json()
@@ -89,10 +93,10 @@ const addCharacters = async (next: string) => {
     }
   }
   addingCharacters.value = false
-  emit('charactersAdded')
+  emit('charactersAdded') // emite ao componente pai que os dados chegaram
   const scroller = document.querySelector('#scroller')!
 
-  scroller.scrollTo({
+  scroller.scrollTo({ // rola um pouco a tela para mostrar ao usuário que novos dados foram inseridos
     top: scroller.scrollHeight,
     left: 0,
     behavior: 'smooth'
@@ -100,7 +104,7 @@ const addCharacters = async (next: string) => {
 }
 
 onMounted(async () => {
-  if (!props.isInFilter) {
+  if (!props.isInFilter) { // busca novas espécies sempre que o state está vazio
     if (useStore.species[props.specie as keyof ISpeciesCluster].length < 1) { //evita nova request caso state ja tenha dados
       emit('addingCharacters')
       const response = await useStore.getSpecie(specieName.value)

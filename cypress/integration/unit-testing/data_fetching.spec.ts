@@ -1,5 +1,5 @@
 /// <reference types="Cypress" />
-
+// diferencial: Testes Unitários
 import { ICharacter } from '../../../src/store/types'
 
 const mockCharacter: ICharacter = {
@@ -9,8 +9,14 @@ const mockCharacter: ICharacter = {
   species: 'Human',
   type: '',
   gender: 'Male',
-  origin: 'Campo Grande - MS',
-  location: 'Campo Grande - MS',
+  origin: {
+    name: '',
+    url: ''
+  },
+  location: {
+    name: '',
+    url: ''
+  },
   image: ''
 }
 

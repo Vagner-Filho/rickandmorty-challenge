@@ -2,6 +2,7 @@ import { ICharacter, ISpeciesCluster } from "./types";
 import { defineStore } from "pinia";
 import { BASE_URL } from "../../utils/constantes"
 
+// requisito: Usar um state management para guardar os dados localmente;
 const detailedCharacter: ICharacter = {
   id: 0,
   image: "",
@@ -46,6 +47,8 @@ export const useCharacterStore = defineStore('characterStore', {
   },
   persist: true,
   actions: {
+    // requisito: Criação de um design patterns para o projeto
+    // não sei muito bem como criar um design pattern, então utilizei o factory
     async getSpecie(specie: string) {
       try {
         const rawResponse = await fetch(`${BASE_URL}/?species=${specie}`)

@@ -42,6 +42,7 @@ const species = reactive([
 const addingCharacters = ref(false)
 const selectedPage = ref(0)
 
+// diferencial: Paginação
 const setPage = (position: number) => {
   if (selectedPage.value + position === -1) selectedPage.value = 9
   else if (selectedPage.value + position === 10) selectedPage.value = 0

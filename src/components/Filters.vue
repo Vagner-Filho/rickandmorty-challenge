@@ -1,6 +1,7 @@
 <template>
   <header class="container-fluid mb-3 mt-3">
     <div class="row white-font" v-if="!loadingFilters">
+    <!-- Acho que ficou muito complexo. Em uma próxima situação, farei algo mais amigável e legível -->
       <div v-for="(filter, index) in filtersConfig" :key="index" :class="`${filter.filterClass} mt-2`">
         <select v-if="filter.name !== 'name-filter'" :name="`${filter.name}`" :id="`${filter.id}`" v-model="filter.filterData.data" class="character-filter" @change="handleFiltering()">
           <option :value="null" selected>{{ filter.optionPlaceholder }}</option>
@@ -34,7 +35,7 @@ interface IFilterConfig {
     data: string | null
   }
 }
-const filtersConfig: IFilterConfig[] = reactive([
+const filtersConfig: IFilterConfig[] = reactive([ // variável de configuração dos filtros
   {
     filterClass: 'col-8 col-sm-4 limit-size-300',
     name: 'name-filter',
@@ -89,7 +90,7 @@ const filtersConfig: IFilterConfig[] = reactive([
 
 const emit = defineEmits(['loadingCharacters', 'charatersLoaded'])
 
-const handleFiltering = async () => {
+const handleFiltering = async () => { // trata a utilização dos filtros
   emit('loadingCharacters')
   function extractFilters(data: IFilterConfig[]) {
     const arr: { type: string, data: string | null }[] = []
@@ -120,7 +121,7 @@ const handleFiltering = async () => {
 
 const loadingFilters = ref(true)
 
-onBeforeMount( async () => {
+onBeforeMount( async () => { // mapeia os filtros em todos os personagens existentes na api
   loadingFilters.value = true
   if (useStore.filtersOptions.length < 1) {
     const filters = await getFiltersOptions()

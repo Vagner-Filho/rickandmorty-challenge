@@ -16,7 +16,8 @@
       <p>Origin: {{ store.detailedCharacter.origin.name }}</p>
     </main>
   </section>
-  <div v-else class="spinner-border text-primary" role="status">
+  <!-- Spinner enquanto dados carregam -->
+  <div v-else class="spinner-border text-primary" role="status"> 
     <span class="visually-hidden">Loading...</span>
   </div>
 </template>
@@ -32,10 +33,13 @@ const store = useCharacterStore()
 const waitingResponse = ref(false)
 const selectStatus = computed(() => {
   return store.detailedCharacter.status === 'Alive' ? 'alive' : 'dead'
+  // retorna status do personagem. Faltou cobrir o caso em "unknown"
 })
 
 onMounted( async () => {
   waitingResponse.value = true
+  // busca o personagem pelo id inserido na rota
+  // requisito: Usar rotas internamente para fazer detalhes de dados;
   const character = await store.getCharacter(parseInt(route.params.id.toString()))
   if (character instanceof Object) {
     store.$patch((state) => state.detailedCharacter = {...character})
