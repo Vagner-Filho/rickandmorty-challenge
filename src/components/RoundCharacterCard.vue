@@ -1,14 +1,21 @@
 <template>
   <nav id="round-character-card">
-    <figure @click="$router.push({ name: 'CharacterDetail', params: { id: 1 }})">
-      <!-- <img src="" alt=""> -->
+    <figure @click="$router.push({ name: 'CharacterDetail', params: { id: id }})">
+      <img :src="avatarPath" :alt="name" class="w-100">
     </figure>
-    <figcaption class="white-font">Human Human</figcaption>
-    <div class="white-font">Location</div>
+    <figcaption class="white-font">{{ name }}</figcaption>
+    <div class="white-font">{{ location }}</div>
   </nav>
 </template>
 
 <script setup lang="ts">
+
+const props = defineProps<{
+  id: number
+  avatarPath: string
+  name: string
+  location: string
+}>()
 
 </script>
 
@@ -19,13 +26,18 @@
     align-items: center;
     margin: 10px 0;
   }
+  #round-character-card > figure > img:hover {
+    box-shadow: 0 0 20px #fff;
+    cursor: pointer;
+  }
   #round-character-card > figure {
     width: 90px;
     height: 90px;
-    border-radius: 90px;
     margin: 0;
-    background-color: gray;
+  }
+  #round-character-card > figure > img {
     border: 1px solid gainsboro;
+    border-radius: 90px;
   }
   #round-character-card > figcaption {
     font-size: 1rem;
