@@ -34,6 +34,21 @@ body {
   font-family: 'Sanchez';
   color: #fff;
 }
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
 
 @media (max-width: 1080px) {
   body {

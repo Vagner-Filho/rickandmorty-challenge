@@ -59,4 +59,29 @@ const setPage = (position: number) => {
     right: -20px;
     top: 170px;
   }
+  @media (min-width: 576px) {
+    span.left {
+      left: -5px
+    }
+    span.right {
+      right: -5px;
+    }
+  }
+  @media (min-width: 768px) {
+
+    span.left, span.right {
+      top: 230px;
+    }
+    span.left > img, span.right > img {
+      width: 25px;
+    }
+  }
+  @media (min-width: 991px) {
+    span.left {
+      left: 5px
+    }
+    span.right {
+      right: 5px;
+    }
+  }
 </style>
