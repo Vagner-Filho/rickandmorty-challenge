@@ -47,7 +47,7 @@ onMounted( async () => {
 <style scoped>
   section#character-detail {
     width: 230px;
-    height: 360px;
+    height: auto;
     border-radius: 5px;
     border: 1px solid #E6E6E6;
     margin: auto;
@@ -57,17 +57,20 @@ onMounted( async () => {
     background-color: #e6e6e6;
   }
   section#character-detail > main {
-    height: auto;
+    min-height: 110px;
+    max-height: 180px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: space-between;
     padding: 0 5px;
+    background-color: rgba(0, 0, 0, 0.7);
   }
   section#character-detail > main > h1, p {
     width: 100%;
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: auto;
+    overflow: hidden;
     text-align: start;
     margin: 0;
   }

@@ -5,10 +5,13 @@
       <hr>
     </header>
     <main class="container-fluid">
-      <div class="row">
-        <div v-if="!isInFilter" class="col-6 col-sm-4 col-md-3" v-for="character in specieCluster">
+      <div class="row" id="scroller">
+        <div v-if="!isInFilter && specieCluster.length > 0" class="col-6 col-sm-4 col-md-3" v-for="character in specieCluster">
           <RoundCharacterCard :id="character.id" :avatarPath="character.image" :name="character.name"
             :location="character.location.name" />
+        </div>
+        <div v-else-if="specieCluster.length < 1" class="spinner-border text-light m-auto" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
         <div v-else-if="isInFilter && useStore.filteredCharacters.length > 0" class="col-6 col-sm-4 col-md-3"
           v-for="character in useStore.filteredCharacters">
@@ -20,9 +23,14 @@
         </span>
       </div>
     </main>
-    <footer class="mt-3">
-      <!-- TODO: scroll container to indicate that new data is available -->
-      <button type="button" class="btn btn-primary" @click="addCharacters(nextPage)">More</button>
+    <footer v-if="!addingCharacters" class="mt-3">
+      <button v-if="!isInFilter" type="button" class="btn btn-primary" @click="addCharacters(nextPage)" :disabled="specieCluster.length < 1">More</button>
+      <button v-else type="button" class="btn btn-primary" @click="addCharacters(useStore.nextFilteredPage)" :disabled="specieCluster.length < 1">More</button>
+    </footer>
+    <footer v-else class="mt-3">
+      <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </footer>
     </section>
 </template>
@@ -31,8 +39,10 @@
 import { computed, ref } from 'vue';
 import RoundCharacterCard from './RoundCharacterCard.vue';
 import { useCharacterStore } from '../store/store';
-import { ICharacter } from "../store/types";
+import { ICharacter, ISpeciesCluster } from "../store/types";
 import { onMounted } from 'vue';
+
+const useStore = useCharacterStore()
 
 const props = defineProps<{
   specie: string
@@ -46,21 +56,16 @@ const specieName = computed(() => {
 
 // TODO: Refactor switch case and ifs in mounted and specieCluster
 const specieCluster = computed(() => {
-  if (props.specie === 'human') return useStore.species.humans[0]
-  if (props.specie === 'alien') return useStore.species.alien[0]
-  if (props.specie === 'humanoid') return useStore.species.humanoid[0]
-  if (props.specie === 'unknown') return useStore.species.unknown[0]
-  if (props.specie === 'poopybutthole') return useStore.species.poopybutthole[0]
-  if (props.specie === 'mythological') return useStore.species.mythological[0]
-  if (props.specie === 'animal') return useStore.species.animal[0]
-  if (props.specie === 'robot') return useStore.species.robot[0]
-  if (props.specie === 'cronenberg') return useStore.species.cronenberg[0]
-  if (props.specie === 'disease') return useStore.species.disease[0]
+  return useStore.species[props.specie as keyof ISpeciesCluster]
 })
 
 const nextPage = ref('')
 
+const addingCharacters = ref(false)
+const emit = defineEmits(['addingCharacters', 'charactersAdded'])
 const addCharacters = async (next: string) => {
+  addingCharacters.value = true
+  emit('addingCharacters')
   if (next) {
     const response = await fetch(next)
     if (response.status === 200) {
@@ -69,73 +74,44 @@ const addCharacters = async (next: string) => {
       const extractCharacter = (data: any) => {
         const character: ICharacter = { ...data }
         useStore.$patch((state) => {
-          state.species[props.specie as keyof {
-            humans: any[];
-            alien: any[];
-            humanoid: any[];
-            unknown: any[];
-            poopybutthole: any[];
-            mythological: any[];
-            animal: any[];
-            robot: any[];
-            cronenberg: any[];
-            disease: any[];
-          }]
+          if (!props.isInFilter) state.species[props.specie as keyof ISpeciesCluster].push(character)
+          else state.filteredCharacters.push(character)
         })
       }
 
       if (data.results.length > 0) {
         for (const character of data.results) {
-
+          extractCharacter(character)
         }
       }
+      if (!props.isInFilter) nextPage.value = data.info.next
+      else useStore.nextFilteredPage = data.info.next
     }
   }
-}
+  addingCharacters.value = false
+  emit('charactersAdded')
+  const scroller = document.querySelector('#scroller')!
 
-const useStore = useCharacterStore()
+  scroller.scrollTo({
+    top: scroller.scrollHeight,
+    left: 0,
+    behavior: 'smooth'
+  })
+}
 
 onMounted(async () => {
   if (!props.isInFilter) {
-    // TODO: continuar adicionando no array existente no store ao inves de criar novos
-    const response = await useStore.getSpecie(specieName.value)
+    if (useStore.species[props.specie as keyof ISpeciesCluster].length < 1) { //evita nova request caso state ja tenha dados
+      emit('addingCharacters')
+      const response = await useStore.getSpecie(specieName.value)
 
-    if (typeof (response) === 'object') { // refatorar para remover switch case
-      nextPage.value = response.next
-      switch (specieName.value.toLowerCase()) {
-        case 'human':
-          useStore.$patch((state) => state.species.humans.push(response.speciesArray))
-          break;
-        case 'alien':
-          useStore.$patch((state) => state.species.alien.push(response.speciesArray))
-          break;
-        case 'humanoid':
-          useStore.$patch((state) => state.species.humanoid.push(response.speciesArray))
-          break;
-        case 'unknown':
-          useStore.$patch((state) => state.species.unknown.push(response.speciesArray))
-          break;
-        case 'poopybutthole':
-          useStore.$patch((state) => state.species.poopybutthole.push(response.speciesArray))
-          break;
-        case 'mythological':
-          useStore.$patch((state) => state.species.mythological.push(response.speciesArray))
-          break;
-        case 'animal':
-          useStore.$patch((state) => state.species.animal.push(response.speciesArray))
-          break;
-        case 'robot':
-          useStore.$patch((state) => state.species.robot.push(response.speciesArray))
-          break;
-        case 'cronenberg':
-          useStore.$patch((state) => state.species.cronenberg.push(response.speciesArray))
-          break;
-        case 'disease':
-          useStore.$patch((state) => state.species.disease.push(response.speciesArray))
-          break;
-        default:
-          break;
+      if (typeof (response) === 'object') { // refatorar para remover switch case
+        nextPage.value = response.next
+        for (const char of response.speciesArray) {
+          useStore.$patch((state) => state.species[props.specie as keyof ISpeciesCluster].push(char))
+        }
       }
+      emit('charactersAdded')
     }
   }
 })
@@ -160,9 +136,10 @@ section.specie-container>header>h1 {
   font-size: 1.3rem;
 }
 
-section.specie-container>main {
+section.specie-container>main>#scroller {
+  max-height: 600px;
   height: 60vh;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 section.specie-container>footer>button {

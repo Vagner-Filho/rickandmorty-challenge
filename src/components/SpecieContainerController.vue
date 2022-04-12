@@ -8,12 +8,14 @@
         v-if="index === selectedPage"
         :specie="specie"
         :is-in-filter="false"
+        @adding-characters="addingCharacters = true"
+        @characters-added="addingCharacters = false"
       />
     </div>
-    <span class="btn position-absolute left">
+    <span class="btn position-absolute left" v-show="!addingCharacters">
       <img src="/to_left_btn.svg" alt="" @click="setPage(-1)">
     </span>
-    <span class="btn position-absolute right">
+    <span class="btn position-absolute right" v-show="!addingCharacters">
       <img src="/to_right_btn.svg" alt="" @click="setPage(1)">
     </span>
   </div>
@@ -37,6 +39,7 @@ const species = reactive([
   "disease"
 ])
 
+const addingCharacters = ref(false)
 const selectedPage = ref(0)
 
 const setPage = (position: number) => {

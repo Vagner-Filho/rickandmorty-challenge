@@ -16,15 +16,15 @@ export interface ICharacter {
   }
 }
 
-export interface ISpecies {
+export interface ISpeciesCluster {
   human: ICharacter[]
   alien: ICharacter[]
   humanoid: ICharacter[]
   unknown: ICharacter[]
   poopybutthole: ICharacter[]
-  Mythological: ICharacter[]
+  mythological: ICharacter[]
   animal: ICharacter[]
   robot: ICharacter[]
   cronenberg: ICharacter[]
-  diseas: ICharacter[]
+  disease: ICharacter[]
 }

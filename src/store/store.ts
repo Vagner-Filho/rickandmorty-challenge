@@ -1,4 +1,4 @@
-import { ICharacter } from "./types";
+import { ICharacter, ISpeciesCluster } from "./types";
 import { defineStore } from "pinia";
 import { BASE_URL } from "../../utils/constantes"
 
@@ -21,25 +21,27 @@ const detailedCharacter: ICharacter = {
 }
 const filteredCharacters: ICharacter[] = []
 
+const species: ISpeciesCluster = {
+  human: [],
+  alien: [],
+  humanoid: [],
+  unknown: [],
+  poopybutthole: [],
+  mythological: [],
+  animal: [],
+  robot: [],
+  cronenberg: [],
+  disease: []
+}
 export const useCharacterStore = defineStore('characterStore', {
   state: () => {
     return {
-      species: {
-        humans: new Array(),
-        alien: new Array(),
-        humanoid: new Array(),
-        unknown: new Array(),
-        poopybutthole: new Array(),
-        mythological: new Array(),
-        animal: new Array(),
-        robot: new Array(),
-        cronenberg: new Array(),
-        disease: new Array()
-      },
+      species,
       detailedCharacter,
       filteredCharacters,
       filtersOptions: new Array(),
       message: '',
+      nextFilteredPage: ''
     }
   },
   persist: true,
@@ -79,7 +81,6 @@ export const useCharacterStore = defineStore('characterStore', {
         const rawResponse = await fetch(`${BASE_URL}/?${filterQuery}`)
         if (rawResponse.status === 200) {
           const data = await rawResponse.json()
-          console.log(data)
           // valida casos em que o retorno é 200, mas o dado vazio
           if (data.results.length > 0) {
             const extractCharacter = (data: any) => {
@@ -89,8 +90,9 @@ export const useCharacterStore = defineStore('characterStore', {
             const arr: ICharacter[] = []
 
             for (const character of data.results) {
-              arr.push(character)
+              arr.push(extractCharacter(character))
             }
+            this.nextFilteredPage = data.info.next
             return arr
           } else {
             const err: string = "Nenhum personagem encontrado"
