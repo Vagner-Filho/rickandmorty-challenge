@@ -1,9 +1,7 @@
-<!-- Este componente foi generalizado apesar da confusãoo no template -->
-<!-- É utilizado tanto na páginação de espécies como na filtragem -->
 <template>
   <section :id="`specie-container-${specie}`" class="specie-container">
     <header v-if="!isInFilter" class="d-flex">
-      <h1 class="white-font">{{ specieName }}</h1>
+      <h1 class="white-font">{{ specieNameFirstLetterUpperCase }}</h1>
       <hr>
     </header>
     <main class="container-fluid">
@@ -25,9 +23,9 @@
         </span>
       </div>
     </main>
-    <footer v-if="!addingCharacters" class="mt-3">
-      <button v-if="!isInFilter" type="button" class="btn btn-primary" @click="addCharacters(nextPage)" :disabled="specieCluster.length < 1">More</button>
-      <button v-else type="button" class="btn btn-primary" @click="addCharacters(useStore.nextFilteredPage)" :disabled="specieCluster.length < 1">More</button>
+    <footer v-if="!isAddingCharacters" class="mt-3">
+      <button v-if="!isInFilter" type="button" class="btn btn-primary" @click="getCharacters(nextPage)" :disabled="specieCluster.length < 1">More</button>
+      <button v-else type="button" class="btn btn-primary" @click="getCharacters(useStore.nextFilteredPage)" :disabled="specieCluster.length < 1">More</button>
     </footer>
     <footer v-else class="mt-3">
       <div class="spinner-border text-light" role="status">
@@ -44,19 +42,19 @@ import { useCharacterStore } from '../store/store';
 import { ICharacter, ISpeciesCluster } from "../store/types";
 import { onMounted } from 'vue';
 
-const useStore = useCharacterStore() // acesso ao store
+const useStore = useCharacterStore()
 
 const props = defineProps<{
   specie: string
   isInFilter: boolean
 }>()
-const specieName = computed(() => { // computed para deixar a primeira letra em upper case
+const specieNameFirstLetterUpperCase = computed(() => { 
   const firstLetterUpperCase = props.specie.slice(0, 1)
 
   return `${firstLetterUpperCase.toUpperCase()}${props.specie.slice(1)}`
 })
 
-const specieCluster = computed(() => { // retorna o cluster de espécies adequado
+const specieCluster = computed(() => {
   return useStore.species[props.specie as keyof ISpeciesCluster]
 })
 
@@ -64,12 +62,12 @@ const nextPage = ref('') // utilizado para buscar mais dados do mesmo tipo
 // FIXME: existe um bug quando uma página é passada, ela perde o seu link nextPage.
 // Então é preciso atualizar a página para recuperar o link e carregar novos dados daquele tipo
 
-const addingCharacters = ref(false) // variável de controle
-const emit = defineEmits(['addingCharacters', 'charactersAdded']) // definição de emits
+const isAddingCharacters = ref(false)
+const emit = defineEmits(['isAddingCharacters', 'charactersAdded'])
 
-const addCharacters = async (next: string) => { // busca personagens do mesmo tipo para aumentar a página
-  addingCharacters.value = true
-  emit('addingCharacters')
+const getCharacters = async (next: string) => { // busca personagens do mesmo tipo para aumentar a página
+  isAddingCharacters.value = true
+  emit('isAddingCharacters')
   if (next) { // é aqui que o nextPage falha ao mudar de página
     const response = await fetch(next)
     if (response.status === 200) {
@@ -92,7 +90,7 @@ const addCharacters = async (next: string) => { // busca personagens do mesmo ti
       else useStore.nextFilteredPage = data.info.next
     }
   }
-  addingCharacters.value = false
+  isAddingCharacters.value = false
   emit('charactersAdded') // emite ao componente pai que os dados chegaram
   const scroller = document.querySelector('#scroller')!
 
@@ -103,11 +101,15 @@ const addCharacters = async (next: string) => { // busca personagens do mesmo ti
   })
 }
 
+const getNextPageOfCharacter = async (nextPage: string) => {
+  useStore.getNextPageOfCharacters(nextPage)
+}
+
 onMounted(async () => {
   if (!props.isInFilter) { // busca novas espécies sempre que o state está vazio
     if (useStore.species[props.specie as keyof ISpeciesCluster].length < 1) { //evita nova request caso state ja tenha dados
-      emit('addingCharacters')
-      const response = await useStore.getSpecie(specieName.value)
+      emit('isAddingCharacters')
+      const response = await useStore.getSpecie(specieNameFirstLetterUpperCase.value)
 
       if (typeof (response) === 'object') { // refatorar para remover switch case
         nextPage.value = response.next
