@@ -30,3 +30,9 @@ export interface ISpeciesCluster {
   cronenberg: ICharacter[]
   disease: ICharacter[]
 }
+
+export interface IHttpResponse {
+  status: number
+  message: string
+  data: any
+}

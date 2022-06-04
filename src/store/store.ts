@@ -1,4 +1,4 @@
-import { ICharacter, ISpeciesCluster } from "./types";
+import { ICharacter, ISpeciesCluster, IHttpResponse } from "./types";
 import { defineStore } from "pinia";
 import { BASE_URL } from "../../utils/constantes"
 
@@ -34,12 +34,19 @@ const species: ISpeciesCluster = {
   cronenberg: [],
   disease: []
 }
+
+const httpResponseInterface: IHttpResponse = {
+  status: 0,
+  message: "",
+  data: null
+}
 export const useCharacterStore = defineStore('characterStore', {
   state: () => {
     return {
       species,
       detailedCharacter,
       filteredCharacters,
+      httpResponseInterface,
       filtersOptions: new Array(),
       message: '',
       nextFilteredPage: ''
@@ -125,6 +132,50 @@ export const useCharacterStore = defineStore('characterStore', {
       } catch (error) {
         console.error(error)
       }
+    },
+    async getNextPageOfCharacters(nextPage: string) {
+      await makeHttpRequest(nextPage)
+      if (httpResponseInterface.status === 200) {
+        // TODO: extract characters from response and put them in appropriate state
+      }
     }
   }
 })
+
+const makeHttpRequest = async (query: string) => {
+  try {
+
+    const response = await fetch(query)
+    handleHttpResponse(response)
+
+  } catch (error) {
+
+    const httpResponse: IHttpResponse = {
+      status: 0,
+      message: '',
+      data: null
+    }
+
+    if (error instanceof Error) {
+      httpResponse.status = 616
+      httpResponse.message = error.message
+      httpResponse.data = null
+    } else {
+      httpResponse.status = 617
+      httpResponse.message = 'An unexpected error ocurred, please be in touch.'
+      httpResponse.data = null
+    }
+    handleHttpResponse(httpResponse)
+  }
+}
+
+const handleHttpResponse = async (response: Response | IHttpResponse) => {
+  httpResponseInterface.status = response.status
+  if (response instanceof Response) {
+    httpResponseInterface.message = response.statusText
+    httpResponseInterface.data = await response.json()
+  } else {
+    httpResponseInterface.message = response.message
+    httpResponseInterface.data = response.data
+  }
+}
