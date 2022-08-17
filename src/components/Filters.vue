@@ -1,7 +1,6 @@
 <template>
   <header class="container-fluid mb-3 mt-3">
     <div class="row white-font" v-if="!loadingFilters">
-    <!-- Acho que ficou muito complexo. Em uma próxima situação, farei algo mais amigável e legível -->
       <div v-for="(filter, index) in filtersConfig" :key="index" :class="`${filter.filterClass} mt-2`">
         <select v-if="filter.name !== 'name-filter'" :name="`${filter.name}`" :id="`${filter.id}`" v-model="filter.filterData.data" class="character-filter" @change="handleFiltering()">
           <option :value="null" selected>{{ filter.optionPlaceholder }}</option>
@@ -19,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, reactive, ref } from 'vue';
+import { onBeforeMount, reactive, ref, onBeforeUnmount } from 'vue';
 import { useCharacterStore } from '../store/store';
 import { getFiltersOptions } from '../../utils/functions';
 
@@ -132,6 +131,10 @@ onBeforeMount( async () => { // mapeia os filtros em todos os personagens existe
   useStore.message = "Filtre personagens!"
   loadingFilters.value = false
 })
+
+// onBeforeUnmount(() => {
+//   useStore.nextFilteredPage = ''
+// })
 </script>
 
 <style scoped>

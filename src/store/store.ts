@@ -1,8 +1,8 @@
-import { ICharacter, ISpeciesCluster, IHttpResponse } from "./types";
+import { ICharacter, ISpeciesCluster } from "./types";
 import { defineStore } from "pinia";
 import { BASE_URL } from "../../utils/constantes"
 
-// requisito: Usar um state management para guardar os dados localmente;
+
 const detailedCharacter: ICharacter = {
   id: 0,
   image: "",
@@ -23,22 +23,46 @@ const detailedCharacter: ICharacter = {
 const filteredCharacters: ICharacter[] = []
 
 const species: ISpeciesCluster = {
-  human: [],
-  alien: [],
-  humanoid: [],
-  unknown: [],
-  poopybutthole: [],
-  mythological: [],
-  animal: [],
-  robot: [],
-  cronenberg: [],
-  disease: []
-}
-
-const httpResponseInterface: IHttpResponse = {
-  status: 0,
-  message: "",
-  data: null
+  human: {
+    cluster: [],
+    nextPage: ''
+  },
+  alien: {
+    cluster: [],
+    nextPage: ''
+  },
+  humanoid: {
+    cluster: [],
+    nextPage: ''
+  },
+  unknown: {
+    cluster: [],
+    nextPage: ''
+  },
+  poopybutthole: {
+    cluster: [],
+    nextPage: ''
+  },
+  mythological: {
+    cluster: [],
+    nextPage: ''
+  },
+  animal: {
+    cluster: [],
+    nextPage: ''
+  },
+  robot: {
+    cluster: [],
+    nextPage: ''
+  },
+  cronenberg: {
+    cluster: [],
+    nextPage: ''
+  },
+  disease: {
+    cluster: [],
+    nextPage: ''
+  }
 }
 export const useCharacterStore = defineStore('characterStore', {
   state: () => {
@@ -46,7 +70,6 @@ export const useCharacterStore = defineStore('characterStore', {
       species,
       detailedCharacter,
       filteredCharacters,
-      httpResponseInterface,
       filtersOptions: new Array(),
       message: '',
       nextFilteredPage: ''
@@ -54,8 +77,7 @@ export const useCharacterStore = defineStore('characterStore', {
   },
   persist: true,
   actions: {
-    // requisito: Criação de um design patterns para o projeto
-    // não sei muito bem como criar um design pattern, então utilizei o factory
+
     async getSpecie(specie: string) {
       try {
         const rawResponse = await fetch(`${BASE_URL}/?species=${specie}`)
@@ -91,7 +113,7 @@ export const useCharacterStore = defineStore('characterStore', {
         const rawResponse = await fetch(`${BASE_URL}/?${filterQuery}`)
         if (rawResponse.status === 200) {
           const data = await rawResponse.json()
-          // valida casos em que o retorno é 200, mas o dado vazio
+
           if (data.results.length > 0) {
             const extractCharacter = (data: any) => {
               const character: ICharacter = { ...data }
@@ -132,50 +154,6 @@ export const useCharacterStore = defineStore('characterStore', {
       } catch (error) {
         console.error(error)
       }
-    },
-    async getNextPageOfCharacters(nextPage: string) {
-      await makeHttpRequest(nextPage)
-      if (httpResponseInterface.status === 200) {
-        // TODO: extract characters from response and put them in appropriate state
-      }
     }
   }
 })
-
-const makeHttpRequest = async (query: string) => {
-  try {
-
-    const response = await fetch(query)
-    handleHttpResponse(response)
-
-  } catch (error) {
-
-    const httpResponse: IHttpResponse = {
-      status: 0,
-      message: '',
-      data: null
-    }
-
-    if (error instanceof Error) {
-      httpResponse.status = 616
-      httpResponse.message = error.message
-      httpResponse.data = null
-    } else {
-      httpResponse.status = 617
-      httpResponse.message = 'An unexpected error ocurred, please be in touch.'
-      httpResponse.data = null
-    }
-    handleHttpResponse(httpResponse)
-  }
-}
-
-const handleHttpResponse = async (response: Response | IHttpResponse) => {
-  httpResponseInterface.status = response.status
-  if (response instanceof Response) {
-    httpResponseInterface.message = response.statusText
-    httpResponseInterface.data = await response.json()
-  } else {
-    httpResponseInterface.message = response.message
-    httpResponseInterface.data = response.data
-  }
-}

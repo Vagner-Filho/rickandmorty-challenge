@@ -1,5 +1,3 @@
-// diferencial: Typescript
-
 export interface ICharacter {
   id: number
   image: string
@@ -19,20 +17,44 @@ export interface ICharacter {
 }
 
 export interface ISpeciesCluster {
-  human: ICharacter[]
-  alien: ICharacter[]
-  humanoid: ICharacter[]
-  unknown: ICharacter[]
-  poopybutthole: ICharacter[]
-  mythological: ICharacter[]
-  animal: ICharacter[]
-  robot: ICharacter[]
-  cronenberg: ICharacter[]
-  disease: ICharacter[]
-}
-
-export interface IHttpResponse {
-  status: number
-  message: string
-  data: any
+  human: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
+  alien: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
+  humanoid: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
+  unknown: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
+  poopybutthole: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
+  mythological: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
+  animal: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
+  robot: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
+  cronenberg: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
+  disease: {
+    cluster: ICharacter[],
+    nextPage: string
+  }
 }

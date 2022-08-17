@@ -26,7 +26,6 @@
 import { ref } from 'vue';
 import Filters from '../components/Filters.vue'
 import SpecieContainer from '../components/SpecieContainer.vue';
-
 const loadingCharacters = ref(false)
 </script>
 

@@ -8,14 +8,14 @@
         v-if="index === selectedPage"
         :specie="specie"
         :is-in-filter="false"
-        @is-adding-characters="isAddingCharacters = true"
-        @characters-added="isAddingCharacters = false"
+        @adding-characters="addingCharacters = true"
+        @characters-added="addingCharacters = false"
       />
     </div>
-    <span class="btn position-absolute left" v-show="!isAddingCharacters">
+    <span class="btn position-absolute left" v-show="!addingCharacters">
       <img src="/to_left_btn.svg" alt="" @click="setPage(-1)">
     </span>
-    <span class="btn position-absolute right" v-show="!isAddingCharacters">
+    <span class="btn position-absolute right" v-show="!addingCharacters">
       <img src="/to_right_btn.svg" alt="" @click="setPage(1)">
     </span>
   </div>
@@ -25,7 +25,6 @@
 import { reactive, ref } from 'vue';
 import FilterBtn from './FilterBtn.vue';
 import SpecieContainer from './SpecieContainer.vue';
-
 const species = reactive([
   "human",
   "alien",
@@ -38,11 +37,8 @@ const species = reactive([
   "cronenberg",
   "disease"
 ])
-
-const isAddingCharacters = ref(false)
+const addingCharacters = ref(false)
 const selectedPage = ref(0)
-
-// diferencial: Paginação
 const setPage = (position: number) => {
   if (selectedPage.value + position === -1) selectedPage.value = 9
   else if (selectedPage.value + position === 10) selectedPage.value = 0
@@ -52,25 +48,29 @@ const setPage = (position: number) => {
 
 <style scoped>
   span.left {
-    left: -20px;
-    top: 170px;
+    left: 30%;
+    top: 100%;
   }
   span.right {
-    right: -20px;
-    top: 170px;
+    right: 30%;
+    top: 100%;
   }
   @media (min-width: 576px) {
     span.left {
-      left: -5px
+      left: 30%;
     }
     span.right {
-      right: -5px;
+      right: 30%;
     }
   }
   @media (min-width: 768px) {
-
-    span.left, span.right {
+    span.left {
       top: 230px;
+      left:5px;
+    }
+    span.right {
+      top: 230px;
+      right: 5px;
     }
     span.left > img, span.right > img {
       width: 25px;

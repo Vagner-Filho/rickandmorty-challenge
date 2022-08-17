@@ -10,7 +10,6 @@ const app = createApp(App)
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
-// diferencial: Garantir uma persistência do cache local;
 
 app.use(pinia)
 app.use(router)
